@@ -24,44 +24,8 @@ if (menuToggle && nav) {
 
 document.querySelector("#year").textContent = new Date().getFullYear();
 
-// Clarity slider: blur + fade text, softly
-const range = document.querySelector("#clarity-range");
-const blurText = document.querySelector("#blur-text");
-function applyClarity() {
-  const v = Number(range.value);
-  const blur = (1 - v / 100) * 5.5;
-  blurText.style.filter = `blur(${blur.toFixed(2)}px)`;
-  blurText.style.opacity = (0.45 + (v / 100) * 0.55).toFixed(2);
-  range.style.setProperty("--fill", v + "%");
-}
-if (range && blurText) {
-  range.addEventListener("input", applyClarity);
-  applyClarity();
-}
-
-// Gentle questions
-const chips = document.querySelectorAll(".q-chip");
-const qResult = document.querySelector("#q-result");
-function updateChips() {
-  const n = document.querySelectorAll(".q-chip.on").length;
-  if (n === 0) qResult.textContent = "Tap any that sound like you.";
-  else if (n === 1) qResult.textContent = "You're not alone.";
-  else qResult.textContent = "Worth a conversation.";
-}
-chips.forEach((chip) => chip.addEventListener("click", () => {
-  const on = chip.classList.toggle("on");
-  chip.setAttribute("aria-pressed", String(on));
-  updateChips();
-}));
-
-// Equalizer bar timing
-document.querySelectorAll(".eq i").forEach((bar, i) => {
-  bar.style.animationDelay = (-(i * 0.17) % 1.6).toFixed(2) + "s";
-  bar.style.animationDuration = (0.9 + ((i * 37) % 9) / 10).toFixed(2) + "s";
-});
-
 // Reveal on scroll
-const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .care-card, .visit-grid, .contact-grid, .sounds-grid, .questions, .scope, .gallery-grid");
+const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .care-card, .visit-grid, .contact-grid, .scope, .gallery-grid");
 revealTargets.forEach((el) => el.classList.add("reveal"));
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries) => {
