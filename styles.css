@@ -353,7 +353,7 @@ h1 em,h2 em{font-style:italic;font-weight:400;color:var(--teal-dark)}
   .main-nav>a:not(.btn):not(.nav-phone)::after { display:none; }
   .main-nav .nav-phone { color:var(--navy)!important; }
   .main-nav .nav-phone svg { color:var(--teal-dark); }
-  .main-nav .btn { margin-top:17px; color:#fff; background:linear-gradient(105deg,var(--blue),var(--teal-dark)); box-shadow:0 8px 18px rgba(33,70,179,.17); }
+  .main-nav .btn { margin-top:17px; color:#fff!important; background:var(--blue); box-shadow:0 8px 18px rgba(33,70,179,.17); }
   .main-nav .btn:hover { background:var(--navy); }
 }
 @media(max-width:560px) {
