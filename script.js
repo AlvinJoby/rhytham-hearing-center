@@ -2,6 +2,10 @@ const WHATSAPP_NUMBER = "918848244831";
 const WHATSAPP_MESSAGE = "Hello Rhytham Hearing Centre, I would like to enquire about an appointment.";
 const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
+// Optional: to receive form submissions by email instead of WhatsApp, paste a Formspree
+// (or similar) endpoint here, e.g. "https://formspree.io/f/xxxxxxxx". Leave empty to use WhatsApp.
+const FORM_ENDPOINT = "";
+
 document.querySelectorAll(".js-whatsapp").forEach((link) => { link.href = waUrl; });
 
 // Mobile navigation
@@ -15,14 +19,12 @@ if (menuToggle && nav) {
   };
   menuToggle.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
   nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setOpen(false)));
-  // Close the menu when tapping elsewhere or pressing Escape.
   document.addEventListener("pointerdown", (event) => {
     if (!nav.contains(event.target) && !menuToggle.contains(event.target)) setOpen(false);
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setOpen(false);
   });
-  // If the viewport returns to desktop sizing, never leave the mobile menu open.
   window.addEventListener("resize", () => {
     if (window.innerWidth > 960) setOpen(false);
   }, { passive: true });
@@ -30,23 +32,41 @@ if (menuToggle && nav) {
 
 document.querySelector("#year").textContent = new Date().getFullYear();
 
-// Sound-wave band: bars follow a soft, layered curve, echoing the dotted pattern on the door glass
-document.querySelectorAll(".wave").forEach((el) => {
-  const count = Number(el.dataset.bars) || 60;
-  const frag = document.createDocumentFragment();
+// Sound-wave bars in the photo frame
+document.querySelectorAll(".frame-wave").forEach((el) => {
+  const count = Number(el.dataset.bars) || 9;
+  const heights = [34, 58, 82, 50, 100, 62, 86, 44, 30];
   for (let i = 0; i < count; i++) {
-    const t = i / (count - 1);
-    const h = 0.22 + 0.78 * Math.abs(Math.sin(t * Math.PI * 3.2) * 0.6 + Math.sin(t * Math.PI * 9 + 1) * 0.4);
     const bar = document.createElement("i");
-    bar.style.setProperty("--h", `${Math.round(h * 100)}%`);
-    bar.style.setProperty("--d", `${(-(i % 14) * 0.2).toFixed(2)}s`);
-    frag.appendChild(bar);
+    bar.style.setProperty("--h", `${heights[i % heights.length]}%`);
+    bar.style.setProperty("--d", `${(-i * 0.27).toFixed(2)}s`);
+    el.appendChild(bar);
   }
-  el.appendChild(frag);
 });
 
+// Opening hours: highlight today and show an Open / Closed badge (Indian Standard Time)
+(function hours() {
+  const list = document.querySelector("#hours");
+  const badge = document.querySelector("#open-badge");
+  if (!list) return;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata", weekday: "short", hour: "numeric", minute: "numeric", hour12: false
+  }).formatToParts(new Date());
+  const get = (t) => parts.find((p) => p.type === t).value;
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+  const mins = (Number(get("hour")) % 24) * 60 + Number(get("minute"));
+  const row = list.querySelector(`[data-day="${day}"]`);
+  if (row) row.classList.add("today");
+  const isOpen = day !== 0 && mins >= 9 * 60 && mins < 18 * 60;
+  if (badge) {
+    badge.hidden = false;
+    badge.textContent = isOpen ? "Open now" : "Closed now";
+    badge.classList.add(isOpen ? "is-open" : "is-closed");
+  }
+})();
+
 // Reveal on scroll
-const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .care-card, .scope, .gallery-grid, .steps li, .visit-cta, .contact-grid");
+const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .service-card, .gallery-grid, .steps li, .contact-grid");
 revealTargets.forEach((el) => el.classList.add("reveal"));
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries) => {
@@ -58,6 +78,110 @@ if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-mot
 } else {
   revealTargets.forEach((el) => el.classList.add("visible"));
 }
+
+// Contact form
+(function contactForm() {
+  const form = document.querySelector("#contact-form");
+  if (!form) return;
+  const done = document.querySelector("#form-done");
+  const note = document.querySelector("#form-note");
+  const dateInput = form.elements.date;
+
+  // Earliest selectable day is today; Sundays are not available.
+  const t = new Date();
+  dateInput.min = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+
+  const setError = (input, msg) => {
+    const field = input.closest(".field");
+    field.classList.toggle("invalid", Boolean(msg));
+    const err = field.querySelector(".err");
+    if (err) err.textContent = msg || "";
+    input.setAttribute("aria-invalid", msg ? "true" : "false");
+  };
+
+  const validators = {
+    name: (v) => (v.trim().length < 2 ? "Please tell us your name." : ""),
+    phone: (v) => (v.replace(/\D/g, "").length < 10 ? "Please enter a valid phone number." : ""),
+    email: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "That email doesn’t look right." : ""),
+    date: (v) => {
+      if (!v) return "";
+      const d = new Date(v + "T00:00:00");
+      return d.getDay() === 0 ? "We are closed on Sundays. Please pick Monday to Saturday." : "";
+    }
+  };
+
+  const validate = (input) => {
+    const fn = validators[input.name];
+    if (!fn) return true;
+    const msg = fn(input.value);
+    setError(input, msg);
+    return !msg;
+  };
+
+  form.querySelectorAll("input, select").forEach((input) => {
+    input.addEventListener("blur", () => validate(input));
+    input.addEventListener("input", () => { if (input.closest(".field").classList.contains("invalid")) validate(input); });
+    input.addEventListener("change", () => validate(input));
+  });
+
+  const buildMessage = (data) => {
+    const lines = [
+      "Hello Rhytham Hearing Centre,",
+      "",
+      `Name: ${data.name}`,
+      `Phone: ${data.phone}`,
+    ];
+    if (data.email) lines.push(`Email: ${data.email}`);
+    lines.push(`Interested in: ${data.service}`);
+    if (data.date) {
+      const nice = new Date(data.date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      lines.push(`Preferred day: ${nice}`);
+    }
+    if (data.message.trim()) lines.push("", data.message.trim());
+    return lines.join("\n");
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const inputs = [...form.querySelectorAll("input, select")];
+    const results = inputs.map(validate);
+    if (results.includes(false)) {
+      form.querySelector(".invalid input, .invalid select").focus();
+      return;
+    }
+    const data = Object.fromEntries(new FormData(form).entries());
+    const btn = form.querySelector("button[type=submit]");
+
+    if (FORM_ENDPOINT) {
+      btn.disabled = true;
+      btn.firstChild.textContent = "Sending… ";
+      try {
+        const res = await fetch(FORM_ENDPOINT, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) });
+        if (!res.ok) throw new Error("bad response");
+        form.hidden = true; done.hidden = false;
+      } catch (err) {
+        note.textContent = "Sorry, that didn’t send. Please try again or call us on 88482 44831.";
+      } finally {
+        btn.disabled = false;
+        btn.firstChild.textContent = "Send message ";
+      }
+      return;
+    }
+
+    // No backend configured: open WhatsApp with the details filled in.
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage(data))}`;
+    window.open(url, "_blank", "noopener");
+    form.hidden = true;
+    done.hidden = false;
+    done.querySelector("p").textContent = "Your message is ready in WhatsApp. Just press send and we will call you back to confirm a time.";
+  });
+
+  document.querySelector("#form-reset").addEventListener("click", () => {
+    form.reset();
+    form.querySelectorAll(".field").forEach((f) => { f.classList.remove("invalid"); const er = f.querySelector(".err"); if (er) er.textContent = ""; });
+    done.hidden = true; form.hidden = false;
+  });
+})();
 
 // Photo lightbox
 const lb = document.querySelector("#lightbox");
