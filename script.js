@@ -6,6 +6,35 @@ const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSA
 // (or similar) endpoint here, e.g. "https://formspree.io/f/xxxxxxxx". Leave empty to use WhatsApp.
 const FORM_ENDPOINT = "";
 
+// Start filling the offline cache while the branded loading screen is visible.
+// The timeout prevents a slow or unsupported browser from holding the page open.
+let offlineCacheReady = Promise.resolve();
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  const cacheTimeout = new Promise((resolve) => window.setTimeout(resolve, 3200));
+  offlineCacheReady = Promise.race([
+    navigator.serviceWorker.register("./service-worker.js").then(() => navigator.serviceWorker.ready),
+    cacheTimeout
+  ]).catch((error) => {
+    console.warn("Offline caching could not be enabled:", error);
+  });
+}
+
+// The short minimum makes the brand animation feel intentional without imposing a fixed wait.
+const siteLoader = document.querySelector("#site-loader");
+if (siteLoader) {
+  const loaderStartedAt = performance.now();
+  const dismissLoader = async () => {
+    const minDisplay = new Promise((resolve) => {
+      window.setTimeout(resolve, Math.max(0, 650 - (performance.now() - loaderStartedAt)));
+    });
+    await Promise.all([minDisplay, offlineCacheReady]);
+    siteLoader.classList.add("is-hidden");
+    window.setTimeout(() => siteLoader.remove(), 500);
+  };
+  if (document.readyState === "complete") dismissLoader();
+  else window.addEventListener("load", dismissLoader, { once: true });
+}
+
 document.querySelectorAll(".js-whatsapp").forEach((link) => { link.href = waUrl; });
 
 // Mobile navigation

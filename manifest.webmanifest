@@ -1,0 +1,13 @@
+{
+  "name": "Rhytham Hearing Centre",
+  "short_name": "Rhytham",
+  "description": "Hearing care, tests and hearing aid services in Kothamangalam, Kerala.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f8fc",
+  "theme_color": "#12335f",
+  "icons": [
+    { "src": "logo-icon.png", "sizes": "any", "type": "image/png", "purpose": "any" }
+  ]
+}
