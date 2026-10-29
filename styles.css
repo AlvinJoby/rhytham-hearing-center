@@ -300,6 +300,7 @@ h1 em,h2 em{font-style:italic;color:var(--teal-dark)}
 .hours li.closed span:last-child{color:#f0a08c;font-weight:700}
 .hours li.today{background:rgba(42,154,134,.14);border-color:transparent}
 .hours li.today span:first-child::after{content:"Today";margin-left:10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy-deep);background:var(--teal);padding:2px 8px;border-radius:99px;vertical-align:1px}
+.hours-note{margin:14px 0 0;color:#a9bdd6;font-size:13px;line-height:1.6}
 .open-badge{font-size:11px;letter-spacing:.08em;font-weight:800;padding:3px 10px;border-radius:99px;text-transform:uppercase}
 .open-badge[hidden]{display:none}
 .open-badge.is-open{background:rgba(94,201,150,.18);color:#7fe0ae}
