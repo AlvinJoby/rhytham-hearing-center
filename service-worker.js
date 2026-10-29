@@ -1,4 +1,4 @@
-const CACHE_NAME = "rhytham-site-v1";
+const CACHE_NAME = "rhytham-site-v2";
 const APP_SHELL = [
   "./",
   "./index.html",

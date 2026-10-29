@@ -78,20 +78,30 @@ document.querySelectorAll(".frame-wave").forEach((el) => {
   const list = document.querySelector("#hours");
   const badge = document.querySelector("#open-badge");
   if (!list) return;
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Kolkata", weekday: "short", hour: "numeric", minute: "numeric", hour12: false
-  }).formatToParts(new Date());
-  const get = (t) => parts.find((p) => p.type === t).value;
-  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
-  const mins = (Number(get("hour")) % 24) * 60 + Number(get("minute"));
-  const row = list.querySelector(`[data-day="${day}"]`);
-  if (row) row.classList.add("today");
-  const isOpen = day !== 0 && mins >= 9 * 60 && mins < 18 * 60;
-  if (badge) {
-    badge.hidden = false;
-    badge.textContent = isOpen ? "Open now" : "Closed now";
-    badge.classList.add(isOpen ? "is-open" : "is-closed");
-  }
+  const updateHours = () => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Kolkata", weekday: "short", hour: "numeric", minute: "numeric", hour12: false
+    }).formatToParts(new Date());
+    const get = (type) => parts.find((part) => part.type === type).value;
+    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+    const mins = (Number(get("hour")) % 24) * 60 + Number(get("minute"));
+
+    list.querySelectorAll("[data-day]").forEach((row) => row.classList.toggle("today", Number(row.dataset.day) === day));
+    const isOpen = day !== 0 && mins >= 9 * 60 && mins < 18 * 60;
+    if (badge) {
+      badge.hidden = false;
+      badge.textContent = isOpen ? "Open now" : "Closed now";
+      badge.classList.toggle("is-open", isOpen);
+      badge.classList.toggle("is-closed", !isOpen);
+    }
+  };
+
+  updateHours();
+  // Keep the live status accurate if a visitor leaves the page open across a closing time.
+  window.setInterval(updateHours, 60_000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) updateHours();
+  });
 })();
 
 // Reveal on scroll
