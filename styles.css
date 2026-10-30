@@ -239,10 +239,7 @@ h1 em,h2 em{font-style:italic;color:var(--teal-dark)}
 .detail-row strong{font-size:20px;font-weight:700}
 .detail-row p{margin:4px 0 0;color:#c9d8ea;font-size:16px;line-height:1.55}
 .detail-row strong a:hover{color:var(--teal)}
-.detail-row .alt-phone{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:8px}
-.detail-row .alt-phone span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#9fb3cc}
-.detail-row .alt-phone a{color:#fff;font-size:18px;font-weight:600}
-.detail-row .alt-phone a:hover{color:var(--teal)}
+.detail-row .detail-second{display:block;margin-top:4px}
 
 /* form */
 .form-card{background:var(--paper);color:var(--text);border-radius:30px;padding:clamp(26px,3.2vw,56px);box-shadow:0 40px 90px rgba(0,0,0,.3);position:relative}
