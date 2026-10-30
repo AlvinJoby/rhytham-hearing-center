@@ -6,35 +6,6 @@ const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSA
 // (or similar) endpoint here, e.g. "https://formspree.io/f/xxxxxxxx". Leave empty to use WhatsApp.
 const FORM_ENDPOINT = "";
 
-// Start filling the offline cache while the branded loading screen is visible.
-// The timeout prevents a slow or unsupported browser from holding the page open.
-let offlineCacheReady = Promise.resolve();
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  const cacheTimeout = new Promise((resolve) => window.setTimeout(resolve, 3200));
-  offlineCacheReady = Promise.race([
-    navigator.serviceWorker.register("./service-worker.js").then(() => navigator.serviceWorker.ready),
-    cacheTimeout
-  ]).catch((error) => {
-    console.warn("Offline caching could not be enabled:", error);
-  });
-}
-
-// The short minimum makes the brand animation feel intentional without imposing a fixed wait.
-const siteLoader = document.querySelector("#site-loader");
-if (siteLoader) {
-  const loaderStartedAt = performance.now();
-  const dismissLoader = async () => {
-    const minDisplay = new Promise((resolve) => {
-      window.setTimeout(resolve, Math.max(0, 650 - (performance.now() - loaderStartedAt)));
-    });
-    await Promise.all([minDisplay, offlineCacheReady]);
-    siteLoader.classList.add("is-hidden");
-    window.setTimeout(() => siteLoader.remove(), 500);
-  };
-  if (document.readyState === "complete") dismissLoader();
-  else window.addEventListener("load", dismissLoader, { once: true });
-}
-
 document.querySelectorAll(".js-whatsapp").forEach((link) => { link.href = waUrl; });
 
 // Mobile navigation
@@ -78,30 +49,20 @@ document.querySelectorAll(".frame-wave").forEach((el) => {
   const list = document.querySelector("#hours");
   const badge = document.querySelector("#open-badge");
   if (!list) return;
-  const updateHours = () => {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Asia/Kolkata", weekday: "short", hour: "numeric", minute: "numeric", hour12: false
-    }).formatToParts(new Date());
-    const get = (type) => parts.find((part) => part.type === type).value;
-    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
-    const mins = (Number(get("hour")) % 24) * 60 + Number(get("minute"));
-
-    list.querySelectorAll("[data-day]").forEach((row) => row.classList.toggle("today", Number(row.dataset.day) === day));
-    const isOpen = day !== 0 && mins >= 9 * 60 && mins < 18 * 60;
-    if (badge) {
-      badge.hidden = false;
-      badge.textContent = isOpen ? "Open now" : "Closed now";
-      badge.classList.toggle("is-open", isOpen);
-      badge.classList.toggle("is-closed", !isOpen);
-    }
-  };
-
-  updateHours();
-  // Keep the live status accurate if a visitor leaves the page open across a closing time.
-  window.setInterval(updateHours, 60_000);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) updateHours();
-  });
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata", weekday: "short", hour: "numeric", minute: "numeric", hour12: false
+  }).formatToParts(new Date());
+  const get = (t) => parts.find((p) => p.type === t).value;
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+  const mins = (Number(get("hour")) % 24) * 60 + Number(get("minute"));
+  const row = list.querySelector(`[data-day="${day}"]`);
+  if (row) row.classList.add("today");
+  const isOpen = day !== 0 && mins >= 9 * 60 && mins < 18 * 60;
+  if (badge) {
+    badge.hidden = false;
+    badge.textContent = isOpen ? "Open now" : "Closed now";
+    badge.classList.add(isOpen ? "is-open" : "is-closed");
+  }
 })();
 
 // Reveal on scroll
