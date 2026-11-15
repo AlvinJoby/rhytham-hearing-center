@@ -10,7 +10,7 @@ const FORM_ENDPOINT = "";
 // The timeout prevents a slow or unsupported browser from holding the page open.
 let offlineCacheReady = Promise.resolve();
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  const cacheTimeout = new Promise((resolve) => window.setTimeout(resolve, 3200));
+  const cacheTimeout = new Promise((resolve) => window.setTimeout(resolve, 2500));
   offlineCacheReady = Promise.race([
     navigator.serviceWorker.register("./service-worker.js").then(() => navigator.serviceWorker.ready),
     cacheTimeout
@@ -19,13 +19,14 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   });
 }
 
-// The short minimum makes the brand animation feel intentional without imposing a fixed wait.
+// The loading screen always stays up for at least LOADER_MIN_MS, then waits for the page and cache if they are slower.
+const LOADER_MIN_MS = 2500;
 const siteLoader = document.querySelector("#site-loader");
 if (siteLoader) {
   const loaderStartedAt = performance.now();
   const dismissLoader = async () => {
     const minDisplay = new Promise((resolve) => {
-      window.setTimeout(resolve, Math.max(0, 650 - (performance.now() - loaderStartedAt)));
+      window.setTimeout(resolve, Math.max(0, LOADER_MIN_MS - (performance.now() - loaderStartedAt)));
     });
     await Promise.all([minDisplay, offlineCacheReady]);
     siteLoader.classList.add("is-hidden");
@@ -59,7 +60,8 @@ if (menuToggle && nav) {
   }, { passive: true });
 }
 
-document.querySelector("#year").textContent = new Date().getFullYear();
+const yearEl = document.querySelector("#year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // Sound-wave bars in the photo frame
 document.querySelectorAll(".frame-wave").forEach((el) => {
@@ -105,7 +107,7 @@ document.querySelectorAll(".frame-wave").forEach((el) => {
 })();
 
 // Reveal on scroll
-const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .service-card, .gallery-grid, .steps li, .contact-grid");
+const revealTargets = document.querySelectorAll(".intro-grid, .section-heading, .service-card, .gallery-grid, .steps li, .contact-grid, .faq-intro, .faq-item, .page-hero-inner, .reveal-me");
 revealTargets.forEach((el) => el.classList.add("reveal"));
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries) => {
@@ -222,22 +224,97 @@ if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-mot
   });
 })();
 
-// Photo lightbox
+// Photo lightbox (Inside page)
 const lb = document.querySelector("#lightbox");
-const lbImg = document.querySelector("#lb-img");
-const lbCap = document.querySelector("#lb-cap");
-function closeLb() { lb.hidden = true; document.body.style.overflow = ""; }
-document.querySelectorAll(".g-item").forEach((fig) => {
-  fig.tabIndex = 0;
-  fig.setAttribute("role", "button");
-  const open = () => {
-    const img = fig.querySelector("img");
-    lbImg.src = img.src; lbImg.alt = img.alt;
-    lbCap.textContent = fig.querySelector("figcaption").textContent;
-    lb.hidden = false; document.body.style.overflow = "hidden";
+if (lb) {
+  const lbImg = document.querySelector("#lb-img");
+  const lbCap = document.querySelector("#lb-cap");
+  const closeLb = () => { lb.hidden = true; document.body.style.overflow = ""; };
+  document.querySelectorAll(".g-item, .photo-tile").forEach((fig) => {
+    fig.tabIndex = 0;
+    fig.setAttribute("role", "button");
+    const open = () => {
+      const img = fig.querySelector("img");
+      lbImg.src = img.src; lbImg.alt = img.alt;
+      lbCap.textContent = fig.querySelector("figcaption").lastChild.textContent;
+      lb.hidden = false; document.body.style.overflow = "hidden";
+    };
+    fig.addEventListener("click", open);
+    fig.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+  });
+  lb.addEventListener("click", (e) => { if (e.target !== lbImg) closeLb(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lb.hidden) closeLb(); });
+}
+
+// FAQ accordion
+(function faq() {
+  const items = [...document.querySelectorAll(".faq-item")];
+  if (!items.length) return;
+  const setOpen = (item, open) => {
+    item.classList.toggle("open", open);
+    item.querySelector(".faq-q").setAttribute("aria-expanded", String(open));
   };
-  fig.addEventListener("click", open);
-  fig.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+  items.forEach((item) => {
+    item.querySelector(".faq-q").addEventListener("click", () => {
+      setOpen(item, !item.classList.contains("open"));
+    });
+  });
+})();
+
+// Page transitions: a brand wipe grows from the click point, then shrinks away on the next page.
+// The incoming half is pure CSS (see .pt-enter in pages.css), so a page can never get stuck covered.
+(function pageTransitions() {
+  const root = document.documentElement;
+  const LEAVE_MS = 620;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Coming back with the browser's Back button can restore the page mid-transition.
+  window.addEventListener("pageshow", () => root.classList.remove("pt-leave"));
+
+  document.addEventListener("click", (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const link = e.target.closest && e.target.closest("a[href]");
+    if (!link || (link.target && link.target !== "_self") || link.hasAttribute("download")) return;
+
+    let url;
+    try { url = new URL(link.href, location.href); } catch (err) { return; }
+    if (!/^(https?:|file:)$/.test(url.protocol) || url.protocol !== location.protocol || url.host !== location.host) return;
+    if (!/(\.html|\/)$/.test(url.pathname)) return;
+
+    const norm = (path) => path.replace(/index\.html$/, "");
+    const samePage = norm(url.pathname) === norm(location.pathname);
+    if (samePage) {
+      if (url.hash) return; // in-page anchor: normal behaviour
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
+      return;
+    }
+
+    e.preventDefault();
+    const labels = { "about.html": "About", "services.html": "Services", "inside.html": "Inside", "visit.html": "Your visit", "contact.html": "Contact" };
+    const file = url.pathname.split("/").pop();
+    const labelEl = document.querySelector("#pt-label");
+    if (labelEl) labelEl.textContent = labels[file] || "Home";
+    try { sessionStorage.setItem("rhy-nav", "1"); } catch (err) { /* private mode: transition just skips the incoming half */ }
+    if (reduceMotion.matches) { location.href = url.href; return; }
+
+    const hasPoint = e.clientX || e.clientY;
+    root.style.setProperty("--px", (hasPoint ? e.clientX : window.innerWidth / 2) + "px");
+    root.style.setProperty("--py", (hasPoint ? e.clientY : window.innerHeight / 2) + "px");
+    root.classList.add("pt-leave");
+    window.setTimeout(() => { location.href = url.href; }, LEAVE_MS);
+    window.setTimeout(() => root.classList.remove("pt-leave"), 4000); // safety net if navigation fails
+  });
+})();
+
+// Waveform along the bottom of each inner-page banner
+document.querySelectorAll(".hero-eq").forEach((el) => {
+  const count = 150;
+  for (let i = 0; i < count; i++) {
+    const bar = document.createElement("i");
+    const h = 22 + Math.abs(Math.sin(i * 0.55) * 46 + Math.sin(i * 1.7) * 22);
+    bar.style.setProperty("--h", `${Math.min(100, h).toFixed(0)}%`);
+    bar.style.setProperty("--d", `${(-((i * 0.37) % 2.6)).toFixed(2)}s`);
+    el.appendChild(bar);
+  }
 });
-lb.addEventListener("click", (e) => { if (e.target !== lbImg) closeLb(); });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lb.hidden) closeLb(); });

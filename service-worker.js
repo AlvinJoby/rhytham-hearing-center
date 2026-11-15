@@ -1,8 +1,14 @@
-const CACHE_NAME = "rhytham-site-v2";
+const CACHE_NAME = "rhytham-site-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
+  "./pages.css",
+  "./about.html",
+  "./services.html",
+  "./inside.html",
+  "./visit.html",
+  "./contact.html",
   "./script.js",
   "./manifest.webmanifest",
   "./logo.png",

@@ -10,12 +10,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"MedicalClinic","name":"Rhytham Hearing Centre","telephone":"+918848244831","medicalSpecialty":"Audiology","address":{"@type":"PostalAddress","streetAddress":"Near GMT LPS, Kozhippilly","addressLocality":"Kothamangalam","addressRegion":"Kerala","postalCode":"686691","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"18:00"}],"sameAs":["https://instagram.com/rhythamhearingcentre"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"MedicalClinic","name":"Rhytham Hearing Centre","telephone":"+918848244831","medicalSpecialty":"Audiology","address":{"@type":"PostalAddress","streetAddress":"Near GMT LPS, Kozhippilly","addressLocality":"Kothamangalam","addressRegion":"Kerala","postalCode":"686691","addressCountry":"IN"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"18:00"}],"sameAs":["https://instagram.com/rhythamhearingcentre","https://www.facebook.com/rhythamhearing","https://www.youtube.com/@RhythamHearing"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I know if I need a hearing test?","acceptedAnswer":{"@type":"Answer","text":"If you often ask people to repeat themselves, turn the TV up louder than others do, struggle to follow conversations in groups or noisy places, or notice ringing in your ears, a hearing test is a good next step. It is simple, and it tells you where you stand."}},{"@type":"Question","name":"Do I need an appointment before visiting?","acceptedAnswer":{"@type":"Answer","text":"We recommend booking, so our team can set time aside for you. Send us a message on WhatsApp, call 88482 44831, or fill in the form on our contact page. We are open Monday to Saturday, 9 am to 6 pm."}},{"@type":"Question","name":"Which hearing aid brands do you offer?","acceptedAnswer":{"@type":"Answer","text":"Phonak is our main brand. We also work with Oticon, Resound, Signia, Hansaton and Unitron. We will help you compare options so you can choose what suits your hearing and your daily life."}},{"@type":"Question","name":"What types of hearing aids are there?","acceptedAnswer":{"@type":"Answer","text":"The main styles are BTE (Behind the Ear), RIC (Receiver in the Canal), CIC (Completely in the Canal) and IIC (Invisible in the Canal). They differ in size and in how they sit on or in the ear. After your assessment, we will explain which styles could work for you."}},{"@type":"Question","name":"Do you repair and service hearing aids?","acceptedAnswer":{"@type":"Answer","text":"Yes. We offer hearing aid repair and maintenance, along with counselling and follow-up after fitting. Call us or message on WhatsApp to tell us about your device, and we will let you know how we can help."}},{"@type":"Question","name":"I have ringing in my ears or feel dizzy. Can you help?","acceptedAnswer":{"@type":"Answer","text":"We offer tinnitus evaluation and management, as well as vestibular assessment and rehabilitation for balance concerns. Book a visit and tell us what you have been experiencing, and we will take it from there."}},{"@type":"Question","name":"Where are you, and when are you open?","acceptedAnswer":{"@type":"Answer","text":"We are near GMT LPS, Kozhippilly, Kothamangalam, Kerala 686691. We are open Monday to Saturday, 9 am to 6 pm, and closed on Sundays. Public holidays may affect our hours, so please call ahead to confirm."}}]}</script>
   <link rel="icon" type="image/png" href="logo-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <script>document.documentElement.classList.add("js")</script>
+  <link rel="stylesheet" href="pages.css">
+  <script>(function(){var d=document.documentElement;d.classList.add("js");try{if(sessionStorage.getItem("rhy-nav")==="1"){sessionStorage.removeItem("rhy-nav");d.classList.add("pt-enter")}}catch(e){}})()</script>
 </head>
 <body>
+  <div class="page-transition" id="page-transition" aria-hidden="true">
+    <p class="pt-label" id="pt-label">Home</p>
+    <div class="pt-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
   <div class="site-loader" id="site-loader" role="status" aria-live="polite" aria-label="Loading Rhytham Hearing Centre">
     <div class="loader-mark">
       <span class="loader-ring" aria-hidden="true"></span>
@@ -34,11 +40,11 @@
       </a>
       <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Open navigation"><span></span><span></span><span></span></button>
       <nav id="main-nav" class="main-nav" aria-label="Main navigation">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#inside">Inside</a>
-        <a href="#visit">Your visit</a>
-        <a href="#contact">Contact</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="inside.html">Inside</a>
+        <a href="visit.html">Your visit</a>
+        <a href="contact.html">Contact</a>
         <a class="nav-phone" href="tel:+918848244831">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.500 1.500a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
           88482 44831
@@ -129,7 +135,7 @@
           <h2>Care that starts<br>with <em>listening.</em></h2>
           <p class="lead">Hearing shapes how we talk, laugh and stay close to the people we love.</p>
           <p>Rhytham is a speech, hearing and balance centre in Kozhippilly. Tell us what you have noticed, and we will help you work out what to do next.</p>
-          <a class="link-arrow" href="#contact">Talk to our team <span aria-hidden="true">→</span></a>
+          <a class="link-arrow" href="contact.html">Talk to our team <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
@@ -193,19 +199,43 @@
       </div>
     </section>
 
-    <!-- GALLERY -->
-    <section class="gallery-section section-pad" id="inside">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Step inside</p>
-          <h2>A calm place <br>to be <em>heard.</em></h2>
+    <!-- FAQ -->
+    <section class="faq-section section-pad" id="faq">
+      <div class="container faq-wrap">
+        <div class="faq-intro">
+          <p class="eyebrow">Good to know</p>
+          <h2>Questions we hear <em>often.</em></h2>
+          <p class="section-sub">A few quick answers before your visit. Can’t find yours? Just ask us.</p>
         </div>
-        <div class="gallery-grid">
-          <figure class="g-item g-a"><img src="images/reception.jpg" alt="Reception desk and scope of service board inside the centre" loading="lazy"><figcaption>The welcome desk</figcaption></figure>
-          <figure class="g-item g-b"><img src="images/doors.jpg" alt="Glass entrance with the Rhytham logo" loading="lazy"><figcaption>Step through the door</figcaption></figure>
-          <figure class="g-item g-c"><img src="images/exterior.jpg" alt="Front of the building with the Rhytham Hearing Centre signboard" loading="lazy"><figcaption>Right on the ground floor</figcaption></figure>
-          <figure class="g-item g-d"><img src="images/waiting.jpg" alt="Waiting area with a sofa" loading="lazy"><figcaption>Wait in comfort</figcaption></figure>
-          <figure class="g-item g-e"><img src="images/night.jpg" alt="Signboard lit up at night" loading="lazy"><figcaption>Lit up after dark</figcaption></figure>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1"><span class="faq-num" aria-hidden="true">01</span><span class="faq-text">How do I know if I need a hearing test?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div><p>If you often ask people to repeat themselves, turn the TV up louder than others do, struggle to follow conversations in groups or noisy places, or notice ringing in your ears, a hearing test is a good next step. It is simple, and it tells you where you stand.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2"><span class="faq-num" aria-hidden="true">02</span><span class="faq-text">Do I need an appointment before visiting?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div><p>We recommend booking, so our team can set time aside for you. Send us a message on WhatsApp, call 88482 44831, or fill in the form on our contact page. We are open Monday to Saturday, 9 am to 6 pm.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3"><span class="faq-num" aria-hidden="true">03</span><span class="faq-text">Which hearing aid brands do you offer?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div><p>Phonak is our main brand. We also work with Oticon, Resound, Signia, Hansaton and Unitron. We will help you compare options so you can choose what suits your hearing and your daily life.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4"><span class="faq-num" aria-hidden="true">04</span><span class="faq-text">What types of hearing aids are there?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div><p>The main styles are BTE (Behind the Ear), RIC (Receiver in the Canal), CIC (Completely in the Canal) and IIC (Invisible in the Canal). They differ in size and in how they sit on or in the ear. After your assessment, we will explain which styles could work for you.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5"><span class="faq-num" aria-hidden="true">05</span><span class="faq-text">Do you repair and service hearing aids?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div><p>Yes. We offer hearing aid repair and maintenance, along with counselling and follow-up after fitting. Call us or message on WhatsApp to tell us about your device, and we will let you know how we can help.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q6" aria-expanded="false" aria-controls="faq-a6"><span class="faq-num" aria-hidden="true">06</span><span class="faq-text">I have ringing in my ears or feel dizzy. Can you help?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div><p>We offer tinnitus evaluation and management, as well as vestibular assessment and rehabilitation for balance concerns. Book a visit and tell us what you have been experiencing, and we will take it from there.</p></div></div>
+          </div>
+          <div class="faq-item">
+            <h3><button class="faq-q" type="button" id="faq-q7" aria-expanded="false" aria-controls="faq-a7"><span class="faq-num" aria-hidden="true">07</span><span class="faq-text">Where are you, and when are you open?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+            <div class="faq-a" id="faq-a7" role="region" aria-labelledby="faq-q7"><div><p>We are near GMT LPS, Kozhippilly, Kothamangalam, Kerala 686691. We are open Monday to Saturday, 9 am to 6 pm, and closed on Sundays. Public holidays may affect our hours, so please call ahead to confirm.</p></div></div>
+          </div>
         </div>
       </div>
     </section>
@@ -244,6 +274,14 @@
             <div class="detail-row">
               <span class="detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.600"/><circle cx="16.800" cy="7.200" r=".6"/></svg></span>
               <div><small>Instagram</small><strong><a href="https://instagram.com/rhythamhearingcentre" target="_blank" rel="noopener">@rhythamhearingcentre</a></strong></div>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 3h-2.500A4.500 4.500 0 0 0 8 7.500V10H5.500v4H8v7h4v-7h2.800l.7-4H12V7.800c0-.5.4-.8.9-.8H15V3Z"/></svg></span>
+              <div><small>Facebook</small><strong><a href="https://www.facebook.com/rhythamhearing" target="_blank" rel="noopener">facebook.com/rhythamhearing</a></strong></div>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.500" y="5.500" width="19" height="13" rx="4"/><path d="m10 9.500 5 2.500-5 2.500Z"/></svg></span>
+              <div><small>YouTube</small><strong><a href="https://www.youtube.com/@RhythamHearing" target="_blank" rel="noopener">@RhythamHearing</a></strong></div>
             </div>
           </div>
           <div class="contact-buttons">
@@ -328,11 +366,11 @@
       <div class="footer-col">
         <h4>Quick links</h4>
         <ul class="footer-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#inside">Inside the centre</a></li>
-          <li><a href="#visit">Plan your visit</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="inside.html">Inside the centre</a></li>
+          <li><a href="visit.html">Plan your visit</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
 
@@ -357,6 +395,8 @@
           <li><a href="tel:+917034447847">+91 70344 47847</a></li>
           <li><a class="js-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp us</a></li>
           <li><a href="https://instagram.com/rhythamhearingcentre" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/rhythamhearing" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.youtube.com/@RhythamHearing" target="_blank" rel="noopener">YouTube</a></li>
           <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Rhytham+Hearing+Centre+Kozhippilly+Kothamangalam+686691" target="_blank" rel="noopener">Directions</a></li>
         </ul>
       </div>
@@ -367,7 +407,6 @@
     </div>
   </footer>
 
-  <div class="lightbox" id="lightbox" hidden><button class="lb-close" type="button" aria-label="Close photo">×</button><figure><img id="lb-img" alt=""><figcaption id="lb-cap"></figcaption></figure></div>
   <script src="script.js"></script>
 </body>
 </html>
